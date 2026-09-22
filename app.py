@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Rolling Scorecard & Email Automation - Holcim Branded Edition
-Streamlit Cloud Application with Holcim Corporate Identity
+Streamlit Cloud Application with Dark Mode & Light Mode Support
 """
 
 from email.header import Header
@@ -23,30 +23,26 @@ st.set_page_config(
 )
 
 # ==============================================================================
-# HOLCIM CORPORATE STYLING (CUSTOM CSS)
+# HOLCIM CORPORATE STYLING (DARK & LIGHT MODE COMPATIBLE)
 # ==============================================================================
 st.markdown(
     """
 <style>
-    /* Main Background */
-    .stApp {
-        background-color: #F8FAFC;
-    }
-
-    /* Holcim Header Banner */
+    /* Holcim Header Banner (Consistently Deep Navy in both modes) */
     .holcim-banner {
-        background: linear-gradient(135deg, #0B1E36 0%, #132E50 100%);
+        background: linear-gradient(135deg, #07172B 0%, #102A4C 100%);
         padding: 1.8rem 2.2rem;
         border-radius: 12px;
-        color: white;
+        color: #FFFFFF !important;
         margin-bottom: 1.8rem;
-        box-shadow: 0 4px 16px rgba(11, 30, 54, 0.12);
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-left: 6px solid #00C067;
     }
     
     .holcim-badge {
-        background-color: rgba(0, 192, 103, 0.15);
-        color: #00D26A;
+        background-color: rgba(0, 192, 103, 0.15) !important;
+        color: #00D26A !important;
         padding: 4px 12px;
         border-radius: 20px;
         font-size: 0.78rem;
@@ -54,7 +50,7 @@ st.markdown(
         letter-spacing: 0.8px;
         display: inline-block;
         margin-bottom: 0.6rem;
-        border: 1px solid rgba(0, 192, 103, 0.35);
+        border: 1px solid rgba(0, 192, 103, 0.4) !important;
         text-transform: uppercase;
     }
 
@@ -63,13 +59,13 @@ st.markdown(
         font-weight: 800;
         letter-spacing: -0.5px;
         margin: 0;
-        color: #FFFFFF;
+        color: #FFFFFF !important;
         line-height: 1.2;
     }
 
     .holcim-subtitle {
         font-size: 1.05rem;
-        color: #94A3B8;
+        color: #94A3B8 !important;
         font-weight: 400;
         margin-top: 0.4rem;
     }
@@ -83,21 +79,21 @@ st.markdown(
         font-size: 1rem !important;
         border-radius: 8px !important;
         padding: 0.6rem 1.4rem !important;
-        box-shadow: 0 3px 10px rgba(0, 192, 103, 0.25) !important;
+        box-shadow: 0 3px 10px rgba(0, 192, 103, 0.3) !important;
         transition: all 0.3s ease !important;
     }
 
     div.stButton > button[kind="primary"]:hover {
         background: linear-gradient(90deg, #00934E 0%, #00A859 100%) !important;
-        box-shadow: 0 5px 15px rgba(0, 192, 103, 0.4) !important;
+        box-shadow: 0 5px 15px rgba(0, 192, 103, 0.45) !important;
         transform: translateY(-1px);
     }
 
-    /* Download Button (Holcim Deep Navy) */
+    /* Download Button (Adaptive with Holcim Green Border) */
     div.stDownloadButton > button {
-        background-color: #0B1E36 !important;
-        color: #FFFFFF !important;
-        border: 1px solid #1E3A5F !important;
+        background-color: var(--secondary-background-color, #102A4C) !important;
+        color: var(--text-color, #FFFFFF) !important;
+        border: 1.5px solid #00C067 !important;
         border-radius: 8px !important;
         font-weight: 700 !important;
         padding: 0.6rem 1.4rem !important;
@@ -105,49 +101,59 @@ st.markdown(
     }
 
     div.stDownloadButton > button:hover {
-        background-color: #132E50 !important;
-        color: #00D26A !important;
-        border-color: #00D26A !important;
-        box-shadow: 0 4px 12px rgba(11, 30, 54, 0.2) !important;
+        background-color: #00C067 !important;
+        color: #07172B !important;
+        border-color: #00C067 !important;
+        box-shadow: 0 4px 14px rgba(0, 192, 103, 0.35) !important;
     }
 
-    /* Metric Cards */
+    /* Metric Cards (Adaptive for Dark and Light Mode) */
     [data-testid="stMetric"] {
-        background-color: #FFFFFF !important;
-        border: 1px solid #E2E8F0 !important;
+        background-color: var(--secondary-background-color, #FFFFFF) !important;
+        border: 1px solid rgba(128, 128, 128, 0.25) !important;
         padding: 14px 18px !important;
         border-radius: 10px !important;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
         border-top: 3px solid #00C067 !important;
     }
 
     [data-testid="stMetricValue"] {
         font-weight: 800 !important;
-        color: #0B1E36 !important;
+        color: var(--text-color) !important;
     }
 
     [data-testid="stMetricLabel"] {
-        color: #64748B !important;
         font-weight: 600 !important;
+        color: var(--text-color) !important;
+        opacity: 0.85;
+    }
+
+    /* File Upload Dropzones */
+    [data-testid="stFileUploadDropzone"] {
+        border: 1.5px dashed #00C067 !important;
+        border-radius: 8px !important;
+        background-color: var(--secondary-background-color) !important;
     }
 
     /* Tabs Styling */
     .stTabs [data-baseweb="tab-list"] {
         gap: 12px;
-        border-bottom: 2px solid #E2E8F0;
+        border-bottom: 2px solid rgba(128, 128, 128, 0.2);
     }
 
     .stTabs [data-baseweb="tab"] {
         padding: 10px 22px;
         font-weight: 700;
-        color: #64748B;
+        color: var(--text-color);
+        opacity: 0.7;
         border-radius: 6px 6px 0 0;
     }
 
     .stTabs [aria-selected="true"] {
-        color: #0B1E36 !important;
+        color: #00D26A !important;
         border-bottom: 3px solid #00C067 !important;
-        background-color: rgba(0, 192, 103, 0.06);
+        background-color: rgba(0, 192, 103, 0.1) !important;
+        opacity: 1 !important;
     }
 </style>
 """,
@@ -812,7 +818,6 @@ def process_data(df_prev_file, df_curr_file):
 # ==============================================================================
 # UI STREAMLIT
 # ==============================================================================
-# Holcim Branded Banner
 st.markdown(
     """
 <div class="holcim-banner">
