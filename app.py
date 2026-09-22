@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Rolling Scorecard & Email Automation - Holcim Branded Edition
-Streamlit Cloud Application with Base64 Embedded Vector Logo & Dark/Light Mode
+Rolling Scorecard & Email Automation - Heracles / Holcim Group Edition
+Streamlit Cloud Application with Heracles & Holcim Group Official Branding
 """
 
 import base64
@@ -18,52 +18,59 @@ import streamlit as st
 
 # Streamlit Page Configuration
 st.set_page_config(
-    page_title="Holcim | Road Safety Scorecard",
-    page_icon="🟢",
+    page_title="HERACLES Group | Road Safety Scorecard",
+    page_icon="🦁",
     layout="wide",
 )
 
 # ==============================================================================
-# LOGO HELPER FUNCTION (BASE64 EMBEDDED - 100% BULLETPROOF)
+# LOGO HELPER FUNCTION (LOADS YOUR EXACT UPLOADED LOGO.PNG)
 # ==============================================================================
-def get_holcim_logo_html():
-  """Checks for a local logo file in GitHub repository, otherwise renders a Base64 encoded SVG."""
-  for fname in ["logo.png", "holcim_logo.png", "holcim.png", "logo.jpg"]:
+def get_heracles_holcim_logo_html():
+  """Checks for logo.png in the repository, otherwise provides a clean Heracles/Holcim vector fallback."""
+  for fname in ["logo.png", "heracles.png", "holcim_logo.png", "holcim.png"]:
     if os.path.exists(fname):
       try:
         with open(fname, "rb") as f:
           encoded = base64.b64encode(f.read()).decode()
         ext = fname.split(".")[-1].lower()
         mime = "image/jpeg" if ext in ["jpg", "jpeg"] else "image/png"
-        return f'<img src="data:{mime};base64,{encoded}" alt="Holcim Logo" style="height: 38px; width: auto; display: block;">'
+        return f'<img src="data:{mime};base64,{encoded}" alt="Heracles Holcim Logo" style="height: 42px; max-width: 320px; width: auto; object-fit: contain; display: block;">'
       except Exception:
         pass
 
-  # Clean Vector SVG without linebreaks/spaces, Base64 Encoded
+  # Fallback Vector Representation if logo.png hasn't been uploaded yet
   clean_svg = (
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 195 42" width="195"'
-      ' height="42"><g stroke-linecap="round" stroke-linejoin="round"><path d="M'
-      ' 14,13 C 6,13 3,17 3,21 C 3,25 6,29 14,29 C 23,29 27,13 36,13 C 44,13'
-      ' 47,17 47,21 C 47,25 44,29 36,29" fill="none" stroke="#00A3E0"'
-      ' stroke-width="4.2"/><path d="M 36,13 C 44,13 47,17 47,21 C 47,25 44,29'
-      ' 36,29 C 27,29 23,13 14,13 C 6,13 3,17 3,21 C 3,25 6,29 14,29" fill="none"'
-      ' stroke="#00C067" stroke-width="4.2" stroke-dasharray="29 29"'
-      ' stroke-dashoffset="14.5"/></g><text x="58" y="28"'
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 44" width="320"'
+      ' height="44"><text x="10" y="30"'
       ' font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif"'
-      ' font-size="22" font-weight="900" fill="#0B1E36"'
-      ' letter-spacing="1.2">HOLCIM</text></svg>'
+      ' font-size="22" font-weight="900" fill="#005A9C"'
+      ' letter-spacing="1px">HERACLES</text><g transform="translate(145,'
+      ' 3)"><path d="M 12,13 C 6,13 3,17 3,21 C 3,25 6,29 12,29 C 19,29 23,13'
+      ' 30,13 C 37,13 40,17 40,21 C 40,25 37,29 30,29" fill="none"'
+      ' stroke="#00A3E0" stroke-width="3.5"/><path d="M 30,13 C 37,13 40,17'
+      ' 40,21 C 40,25 37,29 30,29 C 23,29 19,13 12,13 C 6,13 3,17 3,21 C 3,25'
+      ' 6,29 12,29" fill="none" stroke="#00C067" stroke-width="3.5"'
+      ' stroke-dasharray="24 24" stroke-dashoffset="12"/></g><text x="195"'
+      ' y="20"'
+      ' font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif"'
+      ' font-size="9" font-weight="700" fill="#64748B"'
+      ' letter-spacing="0.5px">A MEMBER OF</text><text x="195" y="32"'
+      ' font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif"'
+      ' font-size="12" font-weight="900" fill="#0B1E36"'
+      ' letter-spacing="0.8px">HOLCIM GROUP</text></svg>'
   )
   b64_svg = base64.b64encode(clean_svg.encode("utf-8")).decode("utf-8")
-  return f'<img src="data:image/svg+xml;base64,{b64_svg}" alt="Holcim Logo" style="height: 38px; width: auto; display: block;">'
+  return f'<img src="data:image/svg+xml;base64,{b64_svg}" alt="Heracles Holcim Logo" style="height: 42px; max-width: 320px; width: auto; display: block;">'
 
 
 # ==============================================================================
-# HOLCIM CORPORATE STYLING (DARK & LIGHT MODE COMPATIBLE)
+# HOLCIM / HERACLES CORPORATE STYLING (DARK & LIGHT MODE COMPATIBLE)
 # ==============================================================================
 st.markdown(
     """
 <style>
-    /* Holcim Header Banner */
+    /* Holcim / Heracles Header Banner */
     .holcim-banner {
         background: linear-gradient(135deg, #07172B 0%, #102A4C 100%);
         padding: 1.8rem 2.2rem;
@@ -77,12 +84,13 @@ st.markdown(
 
     .holcim-logo-card {
         background-color: #FFFFFF !important;
-        padding: 7px 16px !important;
+        padding: 8px 18px !important;
         border-radius: 10px !important;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
+        max-width: 340px !important;
     }
     
     .holcim-badge {
@@ -907,16 +915,14 @@ def process_data(df_prev_file, df_curr_file):
 # ==============================================================================
 # UI STREAMLIT
 # ==============================================================================
-# Dynamic Logo HTML (Base64)
-logo_html = get_holcim_logo_html()
+logo_html = get_heracles_holcim_logo_html()
 
-# Executive Holcim Header without leading markdown spaces
 banner_html = (
     '<div class="holcim-banner">'
     '<div style="display: flex; justify-content: space-between; align-items:'
     ' center; flex-wrap: wrap; gap: 18px;">'
     '<div style="flex: 1; min-width: 280px;">'
-    '<div class="holcim-badge">Holcim Safety Excellence</div>'
+    '<div class="holcim-badge">HERACLES GROUP | SAFETY EXCELLENCE</div>'
     '<div class="holcim-title">Rolling Scorecard & Safety Automation</div>'
     '<div class="holcim-subtitle">Fleet Road Safety Performance Evaluation &'
     ' Automated Notification Dispatch</div>'
