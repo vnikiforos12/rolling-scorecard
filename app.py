@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Rolling Scorecard & Email Automation - Streamlit Cloud Edition
-English UI with Greek Email Templates (10 Templates)
+Rolling Scorecard & Email Automation - Holcim Branded Edition
+Streamlit Cloud Application with Holcim Corporate Identity
 """
 
 from email.header import Header
@@ -17,14 +17,147 @@ import streamlit as st
 
 # Streamlit Page Configuration
 st.set_page_config(
-    page_title="Rolling Scorecard App", page_icon="🚚", layout="wide"
+    page_title="Holcim | Road Safety Scorecard",
+    page_icon="🟢",
+    layout="wide",
+)
+
+# ==============================================================================
+# HOLCIM CORPORATE STYLING (CUSTOM CSS)
+# ==============================================================================
+st.markdown(
+    """
+<style>
+    /* Main Background */
+    .stApp {
+        background-color: #F8FAFC;
+    }
+
+    /* Holcim Header Banner */
+    .holcim-banner {
+        background: linear-gradient(135deg, #0B1E36 0%, #132E50 100%);
+        padding: 1.8rem 2.2rem;
+        border-radius: 12px;
+        color: white;
+        margin-bottom: 1.8rem;
+        box-shadow: 0 4px 16px rgba(11, 30, 54, 0.12);
+        border-left: 6px solid #00C067;
+    }
+    
+    .holcim-badge {
+        background-color: rgba(0, 192, 103, 0.15);
+        color: #00D26A;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        display: inline-block;
+        margin-bottom: 0.6rem;
+        border: 1px solid rgba(0, 192, 103, 0.35);
+        text-transform: uppercase;
+    }
+
+    .holcim-title {
+        font-size: 2.1rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        margin: 0;
+        color: #FFFFFF;
+        line-height: 1.2;
+    }
+
+    .holcim-subtitle {
+        font-size: 1.05rem;
+        color: #94A3B8;
+        font-weight: 400;
+        margin-top: 0.4rem;
+    }
+
+    /* Primary Action Buttons (Holcim Green) */
+    div.stButton > button[kind="primary"] {
+        background: linear-gradient(90deg, #00A859 0%, #00C067 100%) !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        border-radius: 8px !important;
+        padding: 0.6rem 1.4rem !important;
+        box-shadow: 0 3px 10px rgba(0, 192, 103, 0.25) !important;
+        transition: all 0.3s ease !important;
+    }
+
+    div.stButton > button[kind="primary"]:hover {
+        background: linear-gradient(90deg, #00934E 0%, #00A859 100%) !important;
+        box-shadow: 0 5px 15px rgba(0, 192, 103, 0.4) !important;
+        transform: translateY(-1px);
+    }
+
+    /* Download Button (Holcim Deep Navy) */
+    div.stDownloadButton > button {
+        background-color: #0B1E36 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #1E3A5F !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        padding: 0.6rem 1.4rem !important;
+        transition: all 0.3s ease !important;
+    }
+
+    div.stDownloadButton > button:hover {
+        background-color: #132E50 !important;
+        color: #00D26A !important;
+        border-color: #00D26A !important;
+        box-shadow: 0 4px 12px rgba(11, 30, 54, 0.2) !important;
+    }
+
+    /* Metric Cards */
+    [data-testid="stMetric"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E2E8F0 !important;
+        padding: 14px 18px !important;
+        border-radius: 10px !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+        border-top: 3px solid #00C067 !important;
+    }
+
+    [data-testid="stMetricValue"] {
+        font-weight: 800 !important;
+        color: #0B1E36 !important;
+    }
+
+    [data-testid="stMetricLabel"] {
+        color: #64748B !important;
+        font-weight: 600 !important;
+    }
+
+    /* Tabs Styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 12px;
+        border-bottom: 2px solid #E2E8F0;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        padding: 10px 22px;
+        font-weight: 700;
+        color: #64748B;
+        border-radius: 6px 6px 0 0;
+    }
+
+    .stTabs [aria-selected="true"] {
+        color: #0B1E36 !important;
+        border-bottom: 3px solid #00C067 !important;
+        background-color: rgba(0, 192, 103, 0.06);
+    }
+</style>
+""",
+    unsafe_allow_html=True,
 )
 
 # ==============================================================================
 # EMAIL CONFIGURATION
 # ==============================================================================
 SENDER_EMAIL = "VASILEIOS.NIKIFOROS@LAFARGE.COM"
-# Read from Streamlit Secrets or use default fallback
 SENDER_PASSWORD = st.secrets.get("SENDER_PASSWORD", "ilfkvjxuyiffjefs")
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
@@ -32,7 +165,7 @@ DEFAULT_TEST = "VASILEIOS.NIKIFOROS@LAFARGE.COM"
 
 
 # ==============================================================================
-# HELPER DATA CLEANING FUNCTIONS
+# HELPER FUNCTIONS
 # ==============================================================================
 def create_match_key(text):
   if pd.isna(text):
@@ -67,7 +200,7 @@ def clean_percentage(val):
 
 
 # ==============================================================================
-# EMAIL TEMPLATES (10 GREEK HEALTH & SAFETY TEMPLATES)
+# 10 GREEK EMAIL TEMPLATES
 # ==============================================================================
 def generate_email_content(row):
   transporter = row["Transporter"]
@@ -78,10 +211,9 @@ def generate_email_content(row):
   times_60 = row["Times Score 60"]
   tablet_pct = row["Tablet_Use_Pct"]
 
-  # Default Greek Subject
   subject = f'Ειδοποίηση Scorecard: "{transporter}"'
 
-  # 1. Πρότυπο 7: Υποτροπή (Times Score 60 >= 2)
+  # 1. Πρότυπο 7: Υποτροπή
   if is_relapse:
     subject = (
         f'Ειδοποίηση Scorecard: "{transporter}" - ΑΥΣΤΗΡΗ ΠΟΙΝΗ ΥΠΟΤΡΟΠΗΣ'
@@ -105,7 +237,7 @@ def generate_email_content(row):
     )
     return "Πρότυπο 7 (Υποτροπή)", subject, body
 
-  # 2. Πρότυπα 5 & 6: Ποινή 1ης φοράς (Final Score <= 60)
+  # 2. Πρότυπα 5 & 6: Ποινή 1ης φοράς
   if final_score <= 60:
     cat_greek = "ΚΙΤΡΙΝΗ" if category == "Yellow" else "ΚΟΚΚΙΝΗ"
     p_name = (
@@ -128,7 +260,7 @@ def generate_email_content(row):
     )
     return p_name, subject, body
 
-  # 3. Πρότυπα 3 & 4: Πτώση κάτω από 80 (Last Score > 80 και Final Score <= 80)
+  # 3. Πρότυπα 3 & 4: Πτώση κάτω από 80
   if last_score > 80.0 and final_score <= 80:
     cat_greek = "ΚΙΤΡΙΝΗ" if category == "Yellow" else "ΚΟΚΚΙΝΗ"
     p_name = (
@@ -204,7 +336,7 @@ def generate_email_content(row):
       )
       return "Πρότυπο 8 (Tablet < 80% Γενικό)", subject, body
 
-  # 5. Πρότυπα 1 & 2: Γενική ενημέρωση (Tablet >= 80%)
+  # 5. Πρότυπα 1 & 2: Γενική ενημέρωση
   if category in ["Yellow", "Red"]:
     cat_greek = "ΚΙΤΡΙΝΗ" if category == "Yellow" else "ΚΟΚΚΙΝΗ"
     p_name = (
@@ -235,12 +367,11 @@ def generate_email_content(row):
 
 
 # ==============================================================================
-# SCORECARD CALCULATION & EXCEL GENERATION
+# SCORECARD CALCULATION
 # ==============================================================================
 def process_data(df_prev_file, df_curr_file):
   df_curr = pd.read_excel(df_curr_file)
 
-  # Check both Greek and English column headers
   col_trans = (
       "Transporter"
       if "Transporter" in df_curr.columns
@@ -375,7 +506,7 @@ def process_data(df_prev_file, df_curr_file):
   df_merged["Facility"] = df_merged["Facility"].fillna("-")
   df_merged["Distance"] = df_merged["Distance"].fillna(0.0)
 
-  # 1 & 2. Distance (< 500 km) & Category Points
+  # Distance (< 500 km) & Score
   def evaluate_driving(row):
     dist = row["Distance"]
     raw_score = row["Driving_Score"]
@@ -393,7 +524,7 @@ def process_data(df_prev_file, df_curr_file):
   df_merged["Category"] = [x[1] for x in eval_results]
   df_merged["Category Points"] = [x[2] for x in eval_results]
 
-  # 3. Tablet Points
+  # Tablet Points
   def get_tablet_points(row):
     cat = row["Category"]
     pct = row["Tablet_Use_Pct"]
@@ -406,7 +537,7 @@ def process_data(df_prev_file, df_curr_file):
 
   df_merged["Tablet Use Points"] = df_merged.apply(get_tablet_points, axis=1)
 
-  # 4. Last Score, Final Score & Floor/Cap
+  # Last Score & Final Score
   df_merged["Last Score"] = df_merged["Prev_Month_Final_Score"].apply(
       lambda x: 100.0 if (pd.isna(x) or x <= 60.0) else float(x)
   )
@@ -422,7 +553,7 @@ def process_data(df_prev_file, df_curr_file):
       lambda x: 100.0 if x <= 60.0 else x
   )
 
-  # 5. Times Score 60 & Relapse
+  # Times Score 60 & Relapse
   def calc_times_60(row):
     prev_cnt = (
         int(row["Prev_Times_60"]) if pd.notna(row["Prev_Times_60"]) else 0
@@ -435,7 +566,7 @@ def process_data(df_prev_file, df_curr_file):
   )
   df_merged["Is_Relapse"] = df_merged["Times Score 60"] >= 2
 
-  # Evaluation Triggers (Reason Messages)
+  # Evaluation Triggers
   def evaluate_mail_triggers(row):
     reasons = []
     is_relapse = row["Is_Relapse"]
@@ -469,7 +600,6 @@ def process_data(df_prev_file, df_curr_file):
   df_merged["TEST MAIL"] = DEFAULT_TEST
   df_merged["EMAIL"] = ""
 
-  # Final Output Columns (Columns E & F swapped)
   final_cols = [
       "Transporter",
       "Facility",
@@ -495,7 +625,7 @@ def process_data(df_prev_file, df_curr_file):
   df_final["Score"] = df_final["Score"].round(2)
   df_final["Tablet_Use_Pct"] = df_final["Tablet_Use_Pct"].fillna(0.0).round(1)
 
-  # Generate Formatted Excel in Memory (In-Memory BytesIO)
+  # Generate Formatted Excel
   output = io.BytesIO()
   with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
     df_final.to_excel(writer, sheet_name="Scorecard", index=False)
@@ -680,11 +810,18 @@ def process_data(df_prev_file, df_curr_file):
 
 
 # ==============================================================================
-# STREAMLIT USER INTERFACE
+# UI STREAMLIT
 # ==============================================================================
-st.title("🚚 Rolling Scorecard & Safety Email Automation")
+# Holcim Branded Banner
 st.markdown(
-    "### Automated Road Safety Scorecard Processing & Notification Dispatch"
+    """
+<div class="holcim-banner">
+    <div class="holcim-badge">Holcim Safety Excellence</div>
+    <div class="holcim-title">Rolling Scorecard & Safety Automation</div>
+    <div class="holcim-subtitle">Fleet Road Safety Performance Evaluation & Automated Notification Dispatch</div>
+</div>
+""",
+    unsafe_allow_html=True,
 )
 
 if "processed_data" not in st.session_state:
