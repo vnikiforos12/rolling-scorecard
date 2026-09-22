@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Rolling Scorecard & Email Automation - Holcim Branded Edition
-Streamlit Cloud Application with Perfect Dark & Light Mode Metric Cards
+Streamlit Cloud Application with Holcim Logo & Dark/Light Mode Support
 """
 
+import base64
 from email.header import Header
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -23,7 +24,30 @@ st.set_page_config(
 )
 
 # ==============================================================================
-# HOLCIM CORPORATE STYLING (PERFECT DARK & LIGHT MODE METRICS)
+# LOGO HELPER FUNCTION
+# ==============================================================================
+def get_holcim_logo_html():
+  """Checks for a local logo file in the repository, otherwise uses the official Holcim web asset."""
+  for fname in [
+      "logo.png",
+      "holcim_logo.png",
+      "holcim.png",
+      "logo.svg",
+      "holcim.svg",
+  ]:
+    if os.path.exists(fname):
+      with open(fname, "rb") as f:
+        encoded = base64.b64encode(f.read()).decode()
+      mime = "image/svg+xml" if fname.endswith(".svg") else "image/png"
+      return f'<img src="data:{mime};base64,{encoded}" alt="Holcim Logo" style="height: 48px; width: auto; object-fit: contain;">'
+
+  # Official Holcim Logo fallback
+  official_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Holcim_Logo_2021.svg/512px-Holcim_Logo_2021.svg.png"
+  return f'<img src="{official_url}" alt="Holcim Logo" style="height: 48px; width: auto; object-fit: contain;">'
+
+
+# ==============================================================================
+# HOLCIM CORPORATE STYLING (DARK & LIGHT MODE COMPATIBLE)
 # ==============================================================================
 st.markdown(
     """
@@ -38,6 +62,16 @@ st.markdown(
         box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-left: 6px solid #00C067;
+    }
+
+    .holcim-logo-card {
+        background-color: #FFFFFF !important;
+        padding: 8px 16px !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     
     .holcim-badge {
@@ -107,9 +141,7 @@ st.markdown(
         box-shadow: 0 4px 14px rgba(0, 192, 103, 0.35) !important;
     }
 
-    /* ==========================================
-       METRIC CARDS (DARK & LIGHT MODE FIXED)
-       ========================================== */
+    /* Metric Cards */
     div[data-testid="stMetric"] {
         border-radius: 10px !important;
         padding: 14px 18px !important;
@@ -118,7 +150,6 @@ st.markdown(
         transition: all 0.3s ease !important;
     }
 
-    /* Generic Fallback for Metric Labels & Values */
     div[data-testid="stMetric"] [data-testid="stMetricLabel"],
     div[data-testid="stMetric"] [data-testid="stMetricLabel"] *,
     div[data-testid="stMetric"] label,
@@ -135,7 +166,7 @@ st.markdown(
         letter-spacing: -0.5px !important;
     }
 
-    /* DARK MODE SPECIFIC STYLING */
+    /* Dark Mode */
     @media (prefers-color-scheme: dark) {
         div[data-testid="stMetric"] {
             background-color: #0E1E33 !important;
@@ -155,7 +186,7 @@ st.markdown(
         }
     }
 
-    /* LIGHT MODE SPECIFIC STYLING */
+    /* Light Mode */
     @media (prefers-color-scheme: light) {
         div[data-testid="stMetric"] {
             background-color: #FFFFFF !important;
@@ -865,12 +896,23 @@ def process_data(df_prev_file, df_curr_file):
 # ==============================================================================
 # UI STREAMLIT
 # ==============================================================================
+# Dynamic Logo HTML
+logo_html = get_holcim_logo_html()
+
+# Executive Holcim Header with Logo
 st.markdown(
-    """
+    f"""
 <div class="holcim-banner">
-    <div class="holcim-badge">Holcim Safety Excellence</div>
-    <div class="holcim-title">Rolling Scorecard & Safety Automation</div>
-    <div class="holcim-subtitle">Fleet Road Safety Performance Evaluation & Automated Notification Dispatch</div>
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px;">
+        <div style="flex: 1; min-width: 280px;">
+            <div class="holcim-badge">Holcim Safety Excellence</div>
+            <div class="holcim-title">Rolling Scorecard & Safety Automation</div>
+            <div class="holcim-subtitle">Fleet Road Safety Performance Evaluation & Automated Notification Dispatch</div>
+        </div>
+        <div class="holcim-logo-card">
+            {logo_html}
+        </div>
+    </div>
 </div>
 """,
     unsafe_allow_html=True,
