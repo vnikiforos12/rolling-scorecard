@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Rolling Scorecard & Email Automation - Heracles / Holcim Group Edition
-Streamlit Cloud Application with Heracles & Holcim Group Official Branding
+Streamlit Cloud Application with Exact Logo Rendering & Green Circle Icon
 """
 
 import base64
@@ -16,10 +16,10 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-# Streamlit Page Configuration
+# Streamlit Page Configuration (Πράσινος κύκλος αντί για λιοντάρι)
 st.set_page_config(
     page_title="HERACLES Group | Road Safety Scorecard",
-    page_icon="🦁",
+    page_icon="🟢",
     layout="wide",
 )
 
@@ -27,41 +27,33 @@ st.set_page_config(
 # LOGO HELPER FUNCTION (LOADS YOUR EXACT UPLOADED LOGO.PNG)
 # ==============================================================================
 def get_heracles_holcim_logo_html():
-  """Checks for logo.png in the repository, otherwise provides a clean Heracles/Holcim vector fallback."""
-  for fname in ["logo.png", "heracles.png", "holcim_logo.png", "holcim.png"]:
+  """Loads the exact uploaded logo.png from the repository without distortion."""
+  for fname in [
+      "logo.png",
+      "heracles.png",
+      "holcim_logo.png",
+      "holcim.png",
+      "logo.jpg",
+      "logo.jpeg",
+  ]:
     if os.path.exists(fname):
       try:
         with open(fname, "rb") as f:
           encoded = base64.b64encode(f.read()).decode()
         ext = fname.split(".")[-1].lower()
         mime = "image/jpeg" if ext in ["jpg", "jpeg"] else "image/png"
-        return f'<img src="data:{mime};base64,{encoded}" alt="Heracles Holcim Logo" style="height: 42px; max-width: 320px; width: auto; object-fit: contain; display: block;">'
+        return f'<img src="data:{mime};base64,{encoded}" alt="Heracles Holcim Logo" style="height: 50px; max-width: 360px; width: auto; object-fit: contain; display: block;">'
       except Exception:
         pass
 
-  # Fallback Vector Representation if logo.png hasn't been uploaded yet
-  clean_svg = (
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 44" width="320"'
-      ' height="44"><text x="10" y="30"'
-      ' font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif"'
-      ' font-size="22" font-weight="900" fill="#005A9C"'
-      ' letter-spacing="1px">HERACLES</text><g transform="translate(145,'
-      ' 3)"><path d="M 12,13 C 6,13 3,17 3,21 C 3,25 6,29 12,29 C 19,29 23,13'
-      ' 30,13 C 37,13 40,17 40,21 C 40,25 37,29 30,29" fill="none"'
-      ' stroke="#00A3E0" stroke-width="3.5"/><path d="M 30,13 C 37,13 40,17'
-      ' 40,21 C 40,25 37,29 30,29 C 23,29 19,13 12,13 C 6,13 3,17 3,21 C 3,25'
-      ' 6,29 12,29" fill="none" stroke="#00C067" stroke-width="3.5"'
-      ' stroke-dasharray="24 24" stroke-dashoffset="12"/></g><text x="195"'
-      ' y="20"'
-      ' font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif"'
-      ' font-size="9" font-weight="700" fill="#64748B"'
-      ' letter-spacing="0.5px">A MEMBER OF</text><text x="195" y="32"'
-      ' font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif"'
-      ' font-size="12" font-weight="900" fill="#0B1E36"'
-      ' letter-spacing="0.8px">HOLCIM GROUP</text></svg>'
-  )
-  b64_svg = base64.b64encode(clean_svg.encode("utf-8")).decode("utf-8")
-  return f'<img src="data:image/svg+xml;base64,{b64_svg}" alt="Heracles Holcim Logo" style="height: 42px; max-width: 320px; width: auto; display: block;">'
+  # Φιλική υπενθύμιση αν δεν έχει ανέβει ακόμα το αρχείο logo.png στο GitHub
+  return """
+    <div style="color: #0B1E36; font-weight: 700; font-size: 0.85rem; text-align: center; line-height: 1.3;">
+        <span style="color: #005A9C; font-size: 1.15rem; font-weight: 900; letter-spacing: 1px;">HERACLES</span><br>
+        <span style="font-size: 0.75rem; color: #64748B;">A MEMBER OF HOLCIM GROUP</span><br>
+        <span style="font-size: 0.68rem; color: #E11D48; font-weight: 600;">(Ανέβασε το logo.png στο GitHub)</span>
+    </div>
+    """
 
 
 # ==============================================================================
@@ -90,7 +82,7 @@ st.markdown(
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
-        max-width: 340px !important;
+        min-height: 60px !important;
     }
     
     .holcim-badge {
