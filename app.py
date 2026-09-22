@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Rolling Scorecard & Email Automation - Holcim Branded Edition
-Streamlit Cloud Application with Embedded Vector Logo & Dark/Light Mode
+Streamlit Cloud Application with Base64 Embedded Vector Logo & Dark/Light Mode
 """
 
 import base64
@@ -24,10 +24,10 @@ st.set_page_config(
 )
 
 # ==============================================================================
-# LOGO HELPER FUNCTION (EMBEDDED VECTOR + LOCAL FILE SUPPORT)
+# LOGO HELPER FUNCTION (BASE64 EMBEDDED - 100% BULLETPROOF)
 # ==============================================================================
 def get_holcim_logo_html():
-  """Checks for a local logo file in GitHub repository, otherwise renders an embedded vector SVG."""
+  """Checks for a local logo file in GitHub repository, otherwise renders a Base64 encoded SVG."""
   for fname in ["logo.png", "holcim_logo.png", "holcim.png", "logo.jpg"]:
     if os.path.exists(fname):
       try:
@@ -35,23 +35,26 @@ def get_holcim_logo_html():
           encoded = base64.b64encode(f.read()).decode()
         ext = fname.split(".")[-1].lower()
         mime = "image/jpeg" if ext in ["jpg", "jpeg"] else "image/png"
-        return f'<img src="data:{mime};base64,{encoded}" alt="Holcim Logo" style="height: 40px; width: auto; object-fit: contain;">'
+        return f'<img src="data:{mime};base64,{encoded}" alt="Holcim Logo" style="height: 38px; width: auto; display: block;">'
       except Exception:
         pass
 
-  # Embedded pure SVG Vector Logo (Zero external network requests - 100% reliable)
-  svg_code = """
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 195 42" style="height: 38px; width: auto; display: block;">
-        <!-- Holcim Infinity Symbol -->
-        <g stroke-linecap="round" stroke-linejoin="round">
-            <path d="M 14,13 C 6,13 3,17 3,21 C 3,25 6,29 14,29 C 23,29 27,13 36,13 C 44,13 47,17 47,21 C 47,25 44,29 36,29" fill="none" stroke="#00A3E0" stroke-width="4.2"/>
-            <path d="M 36,13 C 44,13 47,17 47,21 C 47,25 44,29 36,29 C 27,29 23,13 14,13 C 6,13 3,17 3,21 C 3,25 6,29 14,29" fill="none" stroke="#00C067" stroke-width="4.2" stroke-dasharray="29 29" stroke-dashoffset="14.5"/>
-        </g>
-        <!-- Holcim Wordmark -->
-        <text x="58" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="900" fill="#0B1E36" letter-spacing="1.2">HOLCIM</text>
-    </svg>
-    """
-  return svg_code
+  # Clean Vector SVG without linebreaks/spaces, Base64 Encoded
+  clean_svg = (
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 195 42" width="195"'
+      ' height="42"><g stroke-linecap="round" stroke-linejoin="round"><path d="M'
+      ' 14,13 C 6,13 3,17 3,21 C 3,25 6,29 14,29 C 23,29 27,13 36,13 C 44,13'
+      ' 47,17 47,21 C 47,25 44,29 36,29" fill="none" stroke="#00A3E0"'
+      ' stroke-width="4.2"/><path d="M 36,13 C 44,13 47,17 47,21 C 47,25 44,29'
+      ' 36,29 C 27,29 23,13 14,13 C 6,13 3,17 3,21 C 3,25 6,29 14,29" fill="none"'
+      ' stroke="#00C067" stroke-width="4.2" stroke-dasharray="29 29"'
+      ' stroke-dashoffset="14.5"/></g><text x="58" y="28"'
+      ' font-family="-apple-system, BlinkMacSystemFont, Arial, sans-serif"'
+      ' font-size="22" font-weight="900" fill="#0B1E36"'
+      ' letter-spacing="1.2">HOLCIM</text></svg>'
+  )
+  b64_svg = base64.b64encode(clean_svg.encode("utf-8")).decode("utf-8")
+  return f'<img src="data:image/svg+xml;base64,{b64_svg}" alt="Holcim Logo" style="height: 38px; width: auto; display: block;">'
 
 
 # ==============================================================================
@@ -904,27 +907,26 @@ def process_data(df_prev_file, df_curr_file):
 # ==============================================================================
 # UI STREAMLIT
 # ==============================================================================
-# Dynamic Logo HTML
+# Dynamic Logo HTML (Base64)
 logo_html = get_holcim_logo_html()
 
-# Executive Holcim Header with Embedded Logo
-st.markdown(
-    f"""
-<div class="holcim-banner">
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 18px;">
-        <div style="flex: 1; min-width: 280px;">
-            <div class="holcim-badge">Holcim Safety Excellence</div>
-            <div class="holcim-title">Rolling Scorecard & Safety Automation</div>
-            <div class="holcim-subtitle">Fleet Road Safety Performance Evaluation & Automated Notification Dispatch</div>
-        </div>
-        <div class="holcim-logo-card">
-            {logo_html}
-        </div>
-    </div>
-</div>
-""",
-    unsafe_allow_html=True,
+# Executive Holcim Header without leading markdown spaces
+banner_html = (
+    '<div class="holcim-banner">'
+    '<div style="display: flex; justify-content: space-between; align-items:'
+    ' center; flex-wrap: wrap; gap: 18px;">'
+    '<div style="flex: 1; min-width: 280px;">'
+    '<div class="holcim-badge">Holcim Safety Excellence</div>'
+    '<div class="holcim-title">Rolling Scorecard & Safety Automation</div>'
+    '<div class="holcim-subtitle">Fleet Road Safety Performance Evaluation &'
+    ' Automated Notification Dispatch</div>'
+    '</div>'
+    f'<div class="holcim-logo-card">{logo_html}</div>'
+    '</div>'
+    '</div>'
 )
+
+st.markdown(banner_html, unsafe_allow_html=True)
 
 if "processed_data" not in st.session_state:
   st.session_state.processed_data = None
