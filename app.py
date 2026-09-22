@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Rolling Scorecard & Email Automation - Holcim Branded Edition
-Streamlit Cloud Application with Holcim Logo & Dark/Light Mode Support
+Streamlit Cloud Application with Embedded Vector Logo & Dark/Light Mode
 """
 
 import base64
@@ -24,26 +24,34 @@ st.set_page_config(
 )
 
 # ==============================================================================
-# LOGO HELPER FUNCTION
+# LOGO HELPER FUNCTION (EMBEDDED VECTOR + LOCAL FILE SUPPORT)
 # ==============================================================================
 def get_holcim_logo_html():
-  """Checks for a local logo file in the repository, otherwise uses the official Holcim web asset."""
-  for fname in [
-      "logo.png",
-      "holcim_logo.png",
-      "holcim.png",
-      "logo.svg",
-      "holcim.svg",
-  ]:
+  """Checks for a local logo file in GitHub repository, otherwise renders an embedded vector SVG."""
+  for fname in ["logo.png", "holcim_logo.png", "holcim.png", "logo.jpg"]:
     if os.path.exists(fname):
-      with open(fname, "rb") as f:
-        encoded = base64.b64encode(f.read()).decode()
-      mime = "image/svg+xml" if fname.endswith(".svg") else "image/png"
-      return f'<img src="data:{mime};base64,{encoded}" alt="Holcim Logo" style="height: 48px; width: auto; object-fit: contain;">'
+      try:
+        with open(fname, "rb") as f:
+          encoded = base64.b64encode(f.read()).decode()
+        ext = fname.split(".")[-1].lower()
+        mime = "image/jpeg" if ext in ["jpg", "jpeg"] else "image/png"
+        return f'<img src="data:{mime};base64,{encoded}" alt="Holcim Logo" style="height: 40px; width: auto; object-fit: contain;">'
+      except Exception:
+        pass
 
-  # Official Holcim Logo fallback
-  official_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Holcim_Logo_2021.svg/512px-Holcim_Logo_2021.svg.png"
-  return f'<img src="{official_url}" alt="Holcim Logo" style="height: 48px; width: auto; object-fit: contain;">'
+  # Embedded pure SVG Vector Logo (Zero external network requests - 100% reliable)
+  svg_code = """
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 195 42" style="height: 38px; width: auto; display: block;">
+        <!-- Holcim Infinity Symbol -->
+        <g stroke-linecap="round" stroke-linejoin="round">
+            <path d="M 14,13 C 6,13 3,17 3,21 C 3,25 6,29 14,29 C 23,29 27,13 36,13 C 44,13 47,17 47,21 C 47,25 44,29 36,29" fill="none" stroke="#00A3E0" stroke-width="4.2"/>
+            <path d="M 36,13 C 44,13 47,17 47,21 C 47,25 44,29 36,29 C 27,29 23,13 14,13 C 6,13 3,17 3,21 C 3,25 6,29 14,29" fill="none" stroke="#00C067" stroke-width="4.2" stroke-dasharray="29 29" stroke-dashoffset="14.5"/>
+        </g>
+        <!-- Holcim Wordmark -->
+        <text x="58" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="900" fill="#0B1E36" letter-spacing="1.2">HOLCIM</text>
+    </svg>
+    """
+  return svg_code
 
 
 # ==============================================================================
@@ -66,9 +74,9 @@ st.markdown(
 
     .holcim-logo-card {
         background-color: #FFFFFF !important;
-        padding: 8px 16px !important;
+        padding: 7px 16px !important;
         border-radius: 10px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -899,7 +907,7 @@ def process_data(df_prev_file, df_curr_file):
 # Dynamic Logo HTML
 logo_html = get_holcim_logo_html()
 
-# Executive Holcim Header with Logo
+# Executive Holcim Header with Embedded Logo
 st.markdown(
     f"""
 <div class="holcim-banner">
