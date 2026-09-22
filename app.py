@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Rolling Scorecard & Email Automation - Streamlit Cloud Edition
-Complete application for Scorecard calculation and Email dispatch (10 Templates)
+English UI with Greek Email Templates (10 Templates)
 """
 
 from email.header import Header
@@ -67,7 +67,7 @@ def clean_percentage(val):
 
 
 # ==============================================================================
-# EMAIL TEMPLATES (10 HEALTH & SAFETY TEMPLATES)
+# EMAIL TEMPLATES (10 GREEK HEALTH & SAFETY TEMPLATES)
 # ==============================================================================
 def generate_email_content(row):
   transporter = row["Transporter"]
@@ -78,152 +78,158 @@ def generate_email_content(row):
   times_60 = row["Times Score 60"]
   tablet_pct = row["Tablet_Use_Pct"]
 
-  subject = f'Scorecard Notification: "{transporter}"'
+  # Default Greek Subject
+  subject = f'Ειδοποίηση Scorecard: "{transporter}"'
 
-  # 1. Template 7: Relapse (Times Score 60 >= 2)
+  # 1. Πρότυπο 7: Υποτροπή (Times Score 60 >= 2)
   if is_relapse:
     subject = (
-        f'Scorecard Notification: "{transporter}" - STRICT DISCIPLINARY /'
-        " RELAPSE NOTICE"
+        f'Ειδοποίηση Scorecard: "{transporter}" - ΑΥΣΤΗΡΗ ΠΟΙΝΗ ΥΠΟΤΡΟΠΗΣ'
     )
     body = (
-        "Dear Partner,\n\n"
-        "Your driving performance in the Monthly Point Card system has led"
-        " your Overall Driving Behavior score (Overall Scorecard) to"
-        f" {final_score} once again.\n\n"
-        f"A RELAPSE has been recorded ({times_60}th time with a score at or"
-        " below the corrective action threshold of 60).\n\n"
-        "Consequently, the Strict Disciplinary Sanctions and Corrective Action"
-        " procedure is immediately activated, in accordance with the Group's"
-        " Rewards and Consequences Policy.\n\n"
-        "Please take immediate corrective actions and arrange an urgent"
-        " meeting with Management and the Health & Safety Department.\n\n"
-        "Sincerely,\n"
-        "Health & Safety Department"
+        "Αγαπητέ Συνεργάτη,\n\n"
+        "Η απόδοσή σας στο σύστημα της Μηνιαίας Κάρτας Πόντων, που καταγράφει"
+        " τις επιδόσεις οδικής συμπεριφοράς, οδήγησε το σκορ της Συνολικής"
+        " Οδικής Συμπεριφοράς (Συνολική Κάρτα Πόντων) εκ νέου στο"
+        f" {final_score}.\n\n"
+        f"Διαπιστώνεται ΥΠΟΤΡΟΠΗ ({times_60}η φορά με βαθμολογία στο όριο"
+        " ανάληψης διορθωτικών ενεργειών του 60).\n\n"
+        "Ως εκ τούτου, ενεργοποιείται άμεσα η διαδικασία Επιβολής Αυστηρών"
+        " Διορθωτικών Κυρώσεων και Ποινών, σύμφωνα με την Πολιτική"
+        " Επιβραβεύσεων και Συνεπειών του Ομίλου.\n\n"
+        "Παρακαλούμε για τις άμεσες ενέργειές σας και τον προγραμματισμό"
+        " έκτακτης συνάντησης με τη Διοίκηση και το Τμήμα Υγείας &"
+        " Ασφάλειας.\n\n"
+        "Με εκτίμηση,\n"
+        "Τμήμα Υγείας & Ασφάλειας"
     )
-    return "Template 7 (Relapse)", subject, body
+    return "Πρότυπο 7 (Υποτροπή)", subject, body
 
-  # 2. Templates 5 & 6: 1st Time Penalty (Final Score <= 60)
+  # 2. Πρότυπα 5 & 6: Ποινή 1ης φοράς (Final Score <= 60)
   if final_score <= 60:
-    cat_lang = "YELLOW" if category == "Yellow" else "RED"
+    cat_greek = "ΚΙΤΡΙΝΗ" if category == "Yellow" else "ΚΟΚΚΙΝΗ"
     p_name = (
-        "Template 5 (Penalty Yellow)"
+        "Πρότυπο 5 (Ποινή Κίτρινη)"
         if category == "Yellow"
-        else "Template 6 (Penalty Red)"
+        else "Πρότυπο 6 (Ποινή Κόκκινη)"
     )
     body = (
-        "Dear Partner,\n\n"
-        "Your driving performance in the Monthly Point Card system is"
-        f" {cat_lang}.\n\n"
-        "Your Overall Driving Behavior score (Overall Scorecard) is"
+        "Αγαπητέ Συνεργάτη,\n\n"
+        "Η απόδοσή σας στο σύστημα της Μηνιαίας Κάρτας Πόντων, που καταγράφει"
+        f" τις επιδόσεις οδικής συμπεριφοράς είναι  {cat_greek}.\n\n"
+        "Το σκορ της Συνολικής Οδικής Συμπεριφοράς (Συνολική Κάρτα πόντων) είναι"
         f" {final_score}.\n\n"
-        "With this performance, your score is already below the corrective"
-        " action threshold of 60.\n\n"
-        "Therefore, the corresponding penalty will be imposed in accordance"
-        " with the Group's Rewards and Consequences Policy.\n\n"
-        "Sincerely,\n"
-        "Health & Safety Department"
+        "Με την απόδοση αυτή το σκορ σας βρίσκεται ήδη κάτω από το όριο"
+        " ανάληψης διορθωτικών ενεργειών του 60.\n\n"
+        "Ως εκ τούτου, θα σας επιβληθεί η αντίστοιχη ποινή βάσει της Πολιτικής"
+        " Επιβραβεύσεων και Συνεπειών του Ομίλου.\n\n"
+        "Με εκτίμηση,\n"
+        "Τμήμα Υγείας & Ασφάλειας"
     )
     return p_name, subject, body
 
-  # 3. Templates 3 & 4: Score Drop below 80 (Last Score > 80 and Final Score <= 80)
+  # 3. Πρότυπα 3 & 4: Πτώση κάτω από 80 (Last Score > 80 και Final Score <= 80)
   if last_score > 80.0 and final_score <= 80:
-    cat_lang = "YELLOW" if category == "Yellow" else "RED"
+    cat_greek = "ΚΙΤΡΙΝΗ" if category == "Yellow" else "ΚΟΚΚΙΝΗ"
     p_name = (
-        "Template 3 (Drop Yellow)"
+        "Πρότυπο 3 (Πτώση Κίτρινη)"
         if category == "Yellow"
-        else "Template 4 (Drop Red)"
+        else "Πρότυπο 4 (Πτώση Κόκκινη)"
     )
     body = (
-        "Dear Partner,\n\n"
-        "Your driving performance in the Monthly Point Card system is"
-        f" {cat_lang}.\n\n"
-        "Your Overall Driving Behavior score (Overall Scorecard) is"
+        "Αγαπητέ Συνεργάτη,\n\n"
+        "Η απόδοσή σας στο σύστημα της Μηνιαίας Κάρτας Πόντων, που καταγράφει"
+        f" τις επιδόσεις οδικής συμπεριφοράς είναι  {cat_greek}.\n\n"
+        "Το σκορ της συνολικής Οδικής Συμπεριφοράς (Συνολική Κάρτα Πόντων) είναι"
         f" {final_score}.\n\n"
-        "With this performance, your score has dropped below the warning"
-        " threshold of 80.\n\n"
-        "Therefore, we urge you to take immediate action to improve the driving"
-        " behavior of your fleet, always keeping Health & Safety as our top"
-        " priority.\n\n"
-        "Sincerely,\n"
-        "Health & Safety Department"
+        "Με την απόδοση αυτή το σκορ σας βρίσκεται ήδη κάτω από το"
+        " προειδοποιητικό όριο του 80.\n\n"
+        "Ως εκ τούτου, σας εφιστούμε την προσοχή για την άμεση βελτίωση της"
+        " απόδοσής σας αναφορικά με την οδική συμπεριφορά του στόλου σας, με"
+        " γνώμονα πάντα την Υγεία & Ασφάλεια.\n\n"
+        "Με εκτίμηση,\n"
+        "Τμήμα Υγείας & Ασφάλειας"
     )
     return p_name, subject, body
 
-  # 4. Templates 9, 10 & 8: Tablet < 80%
+  # 4. Πρότυπα 9, 10 & 8: Tablet < 80%
   if pd.notna(tablet_pct) and tablet_pct < 80.0:
     if category == "Yellow":
       body = (
-          "Dear Partner,\n\n"
-          "Your driving performance in the Monthly Point Card system is"
-          " YELLOW.\n\n"
-          "Your Overall Driving Behavior score (Overall Scorecard) is"
-          f" {final_score}.\n\n"
-          "Additionally, this month your fleet's tablet usage was recorded below"
-          " the 80% threshold. Please inform your drivers in order to promptly"
-          " improve your fleet's road safety and operational compliance.\n\n"
-          "Consequently, 5 points will be deducted from your Overall"
-          " Scorecard.\n\n"
-          "Sincerely,\n"
-          "Health & Safety Department"
+          "Αγαπητέ Συνεργάτη,\n\n"
+          "Η απόδοσή σας στο σύστημα της Μηνιαίας Κάρτας Πόντων, που καταγράφει"
+          " τις επιδόσεις οδικής συμπεριφοράς είναι  ΚΙΤΡΙΝΗ.\n\n"
+          "Το σκορ της Συνολικής Οδικής Συμπεριφοράς (Συνολική Κάρτα πόντων)"
+          f" είναι {final_score}.\n\n"
+          "Επίσης, αυτό το μήνα καταγράφηκε χρήση tablet κάτω από το όριο του"
+          " 80%. Παρακαλούμε, όπως προβείτε στην ενημέρωση των οδηγών σας με"
+          " σκοπό την άμεση βελτίωση της απόδοσής σας αναφορικά με την οδική"
+          " συμπεριφορά του στόλου σας.\n\n"
+          "Ως εκ τούτου θα σας αφαιρεθούν 5 πόντοι από τη βαθμολογία της"
+          " Συνολικής Κάρτας Πόντων.\n\n"
+          "Με εκτίμηση,\n"
+          "Τμήμα Υγείας & Ασφάλειας"
       )
-      return "Template 9 (Tablet < 80% & Yellow)", subject, body
+      return "Πρότυπο 9 (Tablet < 80% & Κίτρινος)", subject, body
 
     elif category == "Red":
       body = (
-          "Dear Partner,\n\n"
-          "Your driving performance in the Monthly Point Card system is"
-          " RED.\n\n"
-          "Your Overall Driving Behavior score (Overall Scorecard) is"
-          f" {final_score}.\n\n"
-          "Additionally, this month your fleet's tablet usage was recorded below"
-          " the 80% threshold. Please inform your drivers in order to promptly"
-          " improve your fleet's road safety and operational compliance.\n\n"
-          "Consequently, 12 points will be deducted from your Overall"
-          " Scorecard.\n\n"
-          "Sincerely,\n"
-          "Health & Safety Department"
+          "Αγαπητέ Συνεργάτη,\n\n"
+          "Η απόδοσή σας στο σύστημα της Μηνιαίας Κάρτας Πόντων, που καταγράφει"
+          " τις επιδόσεις οδικής συμπεριφοράς είναι  ΚΟΚΚΙΝΗ.\n\n"
+          "Το σκορ της Συνολικής Οδικής Συμπεριφοράς (Συνολική Κάρτα πόντων)"
+          f" είναι {final_score}.\n\n"
+          "Επίσης, αυτό το μήνα καταγράφηκε χρήση tablet κάτω από το όριο του"
+          " 80%. Παρακαλούμε, όπως προβείτε στην ενημέρωση των οδηγών σας με"
+          " σκοπό την άμεση βελτίωση της απόδοσής σας αναφορικά με την οδική"
+          " συμπεριφορά του στόλου σας.\n\n"
+          "Ως εκ τούτου θα σας αφαιρεθούν 12 πόντοι από τη βαθμολογία της"
+          " Συνολικής Κάρτας Πόντων.\n\n"
+          "Με εκτίμηση,\n"
+          "Τμήμα Υγείας & Ασφάλειας"
       )
-      return "Template 10 (Tablet < 80% & Red)", subject, body
+      return "Πρότυπο 10 (Tablet < 80% & Κόκκινος)", subject, body
 
     else:
       body = (
-          "Dear Partner,\n\n"
-          "This month your fleet's tablet usage was recorded below the 80%"
-          " threshold. Please inform your drivers in order to promptly improve"
-          " your fleet's road safety and operational compliance.\n\n"
-          "Consequently, 2 points will be deducted from your Overall"
-          " Scorecard.\n\n"
-          "Sincerely,\n"
-          "Health & Safety Department"
+          "Αγαπητέ Συνεργάτη,\n\n"
+          "Αυτό το μήνα καταγράφηκε χρήση tablet κάτω από το όριο του 80%."
+          " Παρακαλούμε, όπως προβείτε στην ενημέρωση των οδηγών σας με σκοπό"
+          " την άμεση βελτίωση της απόδοσής σας αναφορικά με την οδική"
+          " συμπεριφορά του στόλου σας.\n\n"
+          "Ως εκ τούτου θα σας αφαιρεθούν 2 πόντοι από τη βαθμολογία της"
+          " Συνολικής Κάρτας Πόντων.\n\n"
+          "Με εκτίμηση,\n"
+          "Τμήμα Υγείας & Ασφάλειας"
       )
-      return "Template 8 (Tablet < 80% General)", subject, body
+      return "Πρότυπο 8 (Tablet < 80% Γενικό)", subject, body
 
-  # 5. Templates 1 & 2: General Notice (Tablet >= 80%)
+  # 5. Πρότυπα 1 & 2: Γενική ενημέρωση (Tablet >= 80%)
   if category in ["Yellow", "Red"]:
-    cat_lang = "YELLOW" if category == "Yellow" else "RED"
+    cat_greek = "ΚΙΤΡΙΝΗ" if category == "Yellow" else "ΚΟΚΚΙΝΗ"
     p_name = (
-        "Template 1 (General Yellow)"
+        "Πρότυπο 1 (Γενικό Κίτρινο)"
         if category == "Yellow"
-        else "Template 2 (General Red)"
+        else "Πρότυπο 2 (Γενικό Κόκκινο)"
     )
     body = (
-        "Dear Partner,\n\n"
-        "Your driving performance in the Monthly Point Card system is"
-        f" {cat_lang}.\n\n"
-        "Your Overall Driving Behavior score (Overall Scorecard) is"
+        "Αγαπητέ Συνεργάτη,\n\n"
+        "Η απόδοσή σας στο σύστημα της Μηνιαίας Κάρτας Πόντων, που καταγράφει"
+        f" τις επιδόσεις οδικής συμπεριφοράς είναι  {cat_greek}.\n\n"
+        "Το σκορ της Συνολικής Οδικής Συμπεριφοράς (Συνολική Κάρτα πόντων) είναι"
         f" {final_score}.\n\n"
-        "Please inform your drivers in order to promptly improve the driving"
-        " behavior of your fleet.\n\n"
-        "Sincerely,\n"
-        "Health & Safety Department"
+        "Παρακαλούμε, όπως προβείτε στην ενημέρωση των οδηγών σας με σκοπό την"
+        " άμεση βελτίωση της απόδοσής σας αναφορικά με την οδική συμπεριφορά του"
+        " στόλου σας.\n\n"
+        "Με εκτίμηση,\n"
+        "Τμήμα Υγείας & Ασφάλειας"
     )
     return p_name, subject, body
 
   return (
-      "Informational",
+      "Ενημερωτικό",
       subject,
-      f"Scorecard notification for transporter {transporter}. Current Score:"
+      f"Ενημέρωση Scorecard για τον μεταφορέα {transporter}. Τρέχον Σκορ:"
       f" {final_score}.",
   )
 
@@ -429,7 +435,7 @@ def process_data(df_prev_file, df_curr_file):
   )
   df_merged["Is_Relapse"] = df_merged["Times Score 60"] >= 2
 
-  # Evaluation Triggers (English Reason Messages)
+  # Evaluation Triggers (Reason Messages)
   def evaluate_mail_triggers(row):
     reasons = []
     is_relapse = row["Is_Relapse"]
@@ -442,18 +448,18 @@ def process_data(df_prev_file, df_curr_file):
     score = row["Score"]
 
     if is_relapse:
-      reasons.append(f"Relapse - {times_60}th Time <= 60")
+      reasons.append(f"Υποτροπή - {times_60}η Φορά <= 60")
     elif final_score <= 60.0:
-      reasons.append("1st Penalty (Score <= 60)")
+      reasons.append("Ποινή 1ης φοράς (Βαθμολογία <= 60)")
 
     if last_score > 80.0 and final_score <= 80.0:
-      reasons.append("Warning (Drop <= 80)")
+      reasons.append("Προειδοποίηση (Πτώση <= 80)")
 
     if dist >= 500.0 and cat in ["Yellow", "Red"]:
-      reasons.append(f"Category {cat} (Score: {score:.2f})")
+      reasons.append(f"Κατηγορία {cat} (Score: {score:.2f})")
 
     if pd.notna(tab_pct) and tab_pct < 80.0 and dist >= 500.0:
-      reasons.append(f"Low Tablet Usage ({tab_pct:.1f}%)")
+      reasons.append(f"Χαμηλή Χρήση Tablet ({tab_pct:.1f}%)")
 
     return (len(reasons) > 0), ", ".join(reasons)
 
@@ -664,7 +670,7 @@ def process_data(df_prev_file, df_curr_file):
         {
             "type": "text",
             "criteria": "containing",
-            "value": "Relapse",
+            "value": "Υποτροπή",
             "format": fmt_alert,
         },
     )
