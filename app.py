@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Rolling Scorecard & Email Automation - Holcim Branded Edition
-Streamlit Cloud Application with Dark Mode & Light Mode Support
+Streamlit Cloud Application with Perfect Dark & Light Mode Metric Cards
 """
 
 from email.header import Header
@@ -23,12 +23,12 @@ st.set_page_config(
 )
 
 # ==============================================================================
-# HOLCIM CORPORATE STYLING (DARK & LIGHT MODE COMPATIBLE)
+# HOLCIM CORPORATE STYLING (PERFECT DARK & LIGHT MODE METRICS)
 # ==============================================================================
 st.markdown(
     """
 <style>
-    /* Holcim Header Banner (Consistently Deep Navy in both modes) */
+    /* Holcim Header Banner */
     .holcim-banner {
         background: linear-gradient(135deg, #07172B 0%, #102A4C 100%);
         padding: 1.8rem 2.2rem;
@@ -89,7 +89,7 @@ st.markdown(
         transform: translateY(-1px);
     }
 
-    /* Download Button (Adaptive with Holcim Green Border) */
+    /* Download Button */
     div.stDownloadButton > button {
         background-color: var(--secondary-background-color, #102A4C) !important;
         color: var(--text-color, #FFFFFF) !important;
@@ -107,25 +107,72 @@ st.markdown(
         box-shadow: 0 4px 14px rgba(0, 192, 103, 0.35) !important;
     }
 
-    /* Metric Cards (Adaptive for Dark and Light Mode) */
-    [data-testid="stMetric"] {
-        background-color: var(--secondary-background-color, #FFFFFF) !important;
-        border: 1px solid rgba(128, 128, 128, 0.25) !important;
-        padding: 14px 18px !important;
+    /* ==========================================
+       METRIC CARDS (DARK & LIGHT MODE FIXED)
+       ========================================== */
+    div[data-testid="stMetric"] {
         border-radius: 10px !important;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
-        border-top: 3px solid #00C067 !important;
+        padding: 14px 18px !important;
+        border-top: 3.5px solid #00C067 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+        transition: all 0.3s ease !important;
     }
 
-    [data-testid="stMetricValue"] {
-        font-weight: 800 !important;
-        color: var(--text-color) !important;
-    }
-
-    [data-testid="stMetricLabel"] {
+    /* Generic Fallback for Metric Labels & Values */
+    div[data-testid="stMetric"] [data-testid="stMetricLabel"],
+    div[data-testid="stMetric"] [data-testid="stMetricLabel"] *,
+    div[data-testid="stMetric"] label,
+    div[data-testid="stMetric"] p {
         font-weight: 600 !important;
-        color: var(--text-color) !important;
-        opacity: 0.85;
+        font-size: 0.9rem !important;
+    }
+
+    div[data-testid="stMetric"] [data-testid="stMetricValue"],
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] *,
+    div[data-testid="stMetric"] [data-testid="stMetricValue"] div {
+        font-weight: 800 !important;
+        font-size: 1.9rem !important;
+        letter-spacing: -0.5px !important;
+    }
+
+    /* DARK MODE SPECIFIC STYLING */
+    @media (prefers-color-scheme: dark) {
+        div[data-testid="stMetric"] {
+            background-color: #0E1E33 !important;
+            border: 1px solid #1E3A5F !important;
+            border-top: 3.5px solid #00D26A !important;
+        }
+        div[data-testid="stMetric"] [data-testid="stMetricLabel"],
+        div[data-testid="stMetric"] [data-testid="stMetricLabel"] *,
+        div[data-testid="stMetric"] label,
+        div[data-testid="stMetric"] p {
+            color: #94A3B8 !important;
+        }
+        div[data-testid="stMetric"] [data-testid="stMetricValue"],
+        div[data-testid="stMetric"] [data-testid="stMetricValue"] *,
+        div[data-testid="stMetric"] [data-testid="stMetricValue"] div {
+            color: #FFFFFF !important;
+        }
+    }
+
+    /* LIGHT MODE SPECIFIC STYLING */
+    @media (prefers-color-scheme: light) {
+        div[data-testid="stMetric"] {
+            background-color: #FFFFFF !important;
+            border: 1px solid #E2E8F0 !important;
+            border-top: 3.5px solid #00C067 !important;
+        }
+        div[data-testid="stMetric"] [data-testid="stMetricLabel"],
+        div[data-testid="stMetric"] [data-testid="stMetricLabel"] *,
+        div[data-testid="stMetric"] label,
+        div[data-testid="stMetric"] p {
+            color: #475569 !important;
+        }
+        div[data-testid="stMetric"] [data-testid="stMetricValue"],
+        div[data-testid="stMetric"] [data-testid="stMetricValue"] *,
+        div[data-testid="stMetric"] [data-testid="stMetricValue"] div {
+            color: #0B1E36 !important;
+        }
     }
 
     /* File Upload Dropzones */
