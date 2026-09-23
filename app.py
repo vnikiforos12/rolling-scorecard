@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Rolling Scorecard & Email Automation - Heracles / Holcim Group Edition
-Streamlit Cloud Application with Exact Logo Rendering & Green Circle Icon
+Streamlit Cloud Application with Clean Excel-like Tables (No Index Column)
 """
 
 import base64
@@ -16,7 +16,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-# Streamlit Page Configuration (Πράσινος κύκλος αντί για λιοντάρι)
+# Streamlit Page Configuration
 st.set_page_config(
     page_title="HERACLES Group | Road Safety Scorecard",
     page_icon="🟢",
@@ -46,7 +46,7 @@ def get_heracles_holcim_logo_html():
       except Exception:
         pass
 
-  # Φιλική υπενθύμιση αν δεν έχει ανέβει ακόμα το αρχείο logo.png στο GitHub
+  # Fallback vector if logo.png hasn't been uploaded yet
   return """
     <div style="color: #0B1E36; font-weight: 700; font-size: 0.85rem; text-align: center; line-height: 1.3;">
         <span style="color: #005A9C; font-size: 1.15rem; font-weight: 900; letter-spacing: 1px;">HERACLES</span><br>
@@ -992,7 +992,10 @@ with tab1:
     )
 
     st.markdown("### 📋 Final Scorecard Preview")
-    st.dataframe(df_final, use_container_width=True, height=450)
+    # ΕΠΙΛΟΓΗ 2: hide_index=True για απόκρυψη της στήλης αρίθμησης
+    st.dataframe(
+        df_final, use_container_width=True, height=450, hide_index=True
+    )
 
 with tab2:
   if st.session_state.processed_data is None:
@@ -1020,7 +1023,8 @@ with tab2:
         if preview_rows
         else pd.DataFrame(columns=["Message", "No warnings found"])
     )
-    st.dataframe(df_preview, use_container_width=True)
+    # ΕΠΙΛΟΓΗ 2: hide_index=True και στη λίστα προειδοποιήσεων
+    st.dataframe(df_preview, use_container_width=True, hide_index=True)
 
     st.markdown("---")
     st.subheader("📤 Dispatch Options")
