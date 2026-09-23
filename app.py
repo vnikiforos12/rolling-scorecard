@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Rolling Scorecard & Email Automation - Heracles / Holcim Group Edition
-Streamlit Cloud Application with Clean Excel-like Tables (No Index Column)
+Streamlit Cloud Application with Custom Favicon, Exact Logo & Clean Tables
 """
 
 import base64
@@ -14,14 +14,34 @@ import smtplib
 import time
 import numpy as np
 import pandas as pd
+from PIL import Image
 import streamlit as st
 
-# Streamlit Page Configuration
+# ==============================================================================
+# STREAMLIT PAGE CONFIGURATION (CUSTOM PC IMAGE FOR TAB ICON)
+# ==============================================================================
+# Αναζητά πρώτα το δικό σου αρχείο favicon.png / icon.png, αλλιώς χρησιμοποιεί το logo.png ή fallback
+app_icon = "🟢"
+for icon_fname in [
+    "favicon.png",
+    "icon.png",
+    "favicon.ico",
+    "logo.png",
+    "heracles.png",
+]:
+  if os.path.exists(icon_fname):
+    try:
+      app_icon = Image.open(icon_fname)
+      break
+    except Exception:
+      pass
+
 st.set_page_config(
     page_title="HERACLES Group | Road Safety Scorecard",
-    page_icon="🟢",
+    page_icon=app_icon,
     layout="wide",
 )
+
 
 # ==============================================================================
 # LOGO HELPER FUNCTION (LOADS YOUR EXACT UPLOADED LOGO.PNG)
@@ -46,7 +66,7 @@ def get_heracles_holcim_logo_html():
       except Exception:
         pass
 
-  # Fallback vector if logo.png hasn't been uploaded yet
+  # Fallback text if logo.png hasn't been uploaded yet
   return """
     <div style="color: #0B1E36; font-weight: 700; font-size: 0.85rem; text-align: center; line-height: 1.3;">
         <span style="color: #005A9C; font-size: 1.15rem; font-weight: 900; letter-spacing: 1px;">HERACLES</span><br>
@@ -992,7 +1012,7 @@ with tab1:
     )
 
     st.markdown("### 📋 Final Scorecard Preview")
-    # ΕΠΙΛΟΓΗ 2: hide_index=True για απόκρυψη της στήλης αρίθμησης
+    # hide_index=True για απόκρυψη της στήλης αρίθμησης (0, 1, 2...)
     st.dataframe(
         df_final, use_container_width=True, height=450, hide_index=True
     )
@@ -1023,7 +1043,7 @@ with tab2:
         if preview_rows
         else pd.DataFrame(columns=["Message", "No warnings found"])
     )
-    # ΕΠΙΛΟΓΗ 2: hide_index=True και στη λίστα προειδοποιήσεων
+    # hide_index=True και στη λίστα προειδοποιήσεων
     st.dataframe(df_preview, use_container_width=True, hide_index=True)
 
     st.markdown("---")
