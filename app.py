@@ -273,7 +273,7 @@ st.markdown(
 # EMAIL CONFIGURATION
 # ==============================================================================
 SENDER_EMAIL = "VASILEIOS.NIKIFOROS@LAFARGE.COM"
-SENDER_PASSWORD = st.secrets.get("SENDER_PASSWORD", "ilfkvjxuyiffjefs")
+SENDER_PASSWORD = st.secrets["SENDER_PASSWORD"]
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 DEFAULT_TEST = "VASILEIOS.NIKIFOROS@LAFARGE.COM"
