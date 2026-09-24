@@ -1,0 +1,58 @@
+name: Keep Streamlit App Awake
+
+on:
+  schedule:
+    # Εκτελείται αυτόματα κάθε μέρα στις 07:00 το πρωί
+    - cron: '0 5 * * *'
+  workflow_dispatch: # Σου επιτρέπει να το τρέξεις χειροκίνητα όποτε θες με 1 κουμπί
+
+jobs:
+  wake-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Playwright & Browser
+        run: |
+          pip install playwright
+          playwright install chromium --with-deps
+
+      - name: Check and Wake Up Streamlit App
+        run: |
+          python - << 'EOF'
+          import time
+          from playwright.sync_api import sync_playwright
+
+          # -------------------------------------------------------------
+          # ΒΑΛΕ ΕΔΩ ΤΟ ΠΡΑΓΜΑΤΙΚΟ LINK ΤΗΣ ΕΦΑΡΜΟΓΗΣ ΣΟΥ:
+          APP_URL = "https://holcimgr-rollingscorecard.streamlit.app/"
+          # -------------------------------------------------------------
+
+          print(f"Connecting to {APP_URL}...")
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True)
+              page = browser.new_page()
+              
+              try:
+                  page.goto(APP_URL, timeout=60000)
+                  # Αναμονή για να φορτώσει η σελίδα
+                  time.sleep(12)
+                  
+                  # Αναζήτηση του κουμπιού αφύπνισης
+                  wake_button = page.locator("button:has-text('back up'), button:has-text('wake up'), button:has-text('Yes, get this app back up')")
+                  
+                  if wake_button.count() > 0 and wake_button.first.is_visible():
+                      print("🔔 Η εφαρμογή κοιμόταν! Πάτημα του κουμπιού αφύπνισης...")
+                      wake_button.first.click()
+                      time.sleep(15)
+                      print("✅ Το σήμα αφύπνισης εστάλη επιτυχώς!")
+                  else:
+                      print("🟢 Η εφαρμογή είναι ήδη ξύπνια και λειτουργεί κανονικά!")
+              except Exception as e:
+                  print(f"⚠️ Σφάλμα κατά τη σύνδεση: {e}")
+              finally:
+                  browser.close()
+          EOF
